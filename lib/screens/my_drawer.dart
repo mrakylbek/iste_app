@@ -4,6 +4,7 @@ import '../screens/tabs_screen.dart';
 // import 'package:flutter_tasks_app/screens/pending_tasks_screen.dart';
 
 import '../bloc/bloc_exports.dart';
+import '../services/getTasksList.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -34,31 +35,38 @@ class MyDrawer extends StatelessWidget {
             ),
             BlocBuilder<TasksBloc, TasksState>(
               builder: (context, state) {
-                return GestureDetector(
-                  onTap: () => Navigator.of(context).pushReplacementNamed(
-                    TabsScreen.id,
-                  ),
-                  child: ListTile(
-                    leading: const Icon(Icons.folder_special),
-                    title: const Text('Менің тапсырмаларым'),
-                    trailing: Text(
-                        '${state.pendingTasks.length} | ${state.completedTasks.length}'),
-                  ),
-                );
+                if (state is TasksLoaded) {
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context).pushReplacementNamed(
+                      TabsScreen.id,
+                    ),
+                    child: ListTile(
+                      leading: const Icon(Icons.folder_special),
+                      title: const Text('Менің тапсырмаларым'),
+                      trailing: Text(
+                          '${getPendingTasks(state.allTasks).length} | ${getCompletedTasks(state.allTasks).length}'),
+                    ),
+                  );
+                }
+                return const CircularProgressIndicator();
               },
             ),
             const Divider(),
             BlocBuilder<TasksBloc, TasksState>(
               builder: (context, state) {
-                return GestureDetector(
-                  onTap: () =>
-                      Navigator.of(context).pushReplacementNamed(RecycleBin.id),
-                  child: ListTile(
-                    leading: const Icon(Icons.delete),
-                    title: const Text('Қоқыстар'),
-                    trailing: Text('${state.removedTasks.length}'),
-                  ),
-                );
+                if (state is TasksLoaded) {
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context)
+                        .pushReplacementNamed(RecycleBin.id),
+                    child: ListTile(
+                      leading: const Icon(Icons.delete),
+                      title: const Text('Қоқыстар'),
+                      trailing:
+                          Text('${getDeletedTasks(state.allTasks).length}'),
+                    ),
+                  );
+                }
+                return const CircularProgressIndicator();
               },
             ),
             BlocBuilder<SwitchBloc, SwitchState>(

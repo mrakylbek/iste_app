@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/guid_gen.dart';
+import 'package:uuid/uuid.dart';
 
 import '../bloc/bloc_exports.dart';
 import '../models/task.dart';
@@ -11,6 +12,7 @@ class AddTaskScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uuid = const Uuid();
     TextEditingController titleController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
     return Container(
@@ -60,7 +62,8 @@ class AddTaskScreen extends StatelessWidget {
                   var task = Task(
                     title: titleController.text,
                     description: descriptionController.text,
-                    id: GUIDGen.generate(),
+                    // id: GUIDGen.generate(),
+                    id: uuid.v4(),
                     date: DateTime.now().toString(),
                     isDeleted: false,
                     isDone: false,

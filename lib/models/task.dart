@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 class Task extends Equatable {
@@ -57,13 +60,13 @@ class Task extends Equatable {
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
-      title: map['title'] ?? '',
-      description: map['description'] ?? '',
-      id: map['id'] ?? '',
-      date: map['date'] ?? '',
-      isDeleted: map['isDeleted'],
-      isDone: map['isDone'],
-      isFavorite: map['isFavorite'],
+      title: map['title'] as String,
+      description: map['description'] as String,
+      id: map['id'] as String,
+      date: map['date'] as String,
+      isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
+      isDone: map['isDone'] != null ? map['isDone'] as bool : null,
+      isFavorite: map['isFavorite'] != null ? map['isFavorite'] as bool : null,
     );
   }
 
@@ -77,4 +80,13 @@ class Task extends Equatable {
         isDone,
         isFavorite,
       ];
+
+  static String toJson(List<Task> tasks) => json.encode(
+        tasks.map<Map<String, dynamic>>((task) => task.toMap()).toList(),
+      );
+
+  static List<Task> fromJson(String source) =>
+      (json.decode(source) as List<dynamic>)
+          .map<Task>((e) => Task.fromMap(e))
+          .toList();
 }
